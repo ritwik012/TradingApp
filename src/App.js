@@ -1,8 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import './App.css'
+import { BrowserRouter as Router, Route, Routes, Link, NavLink } from 'react-router-dom';
+import './App.css';
 
-// Components
+// Components import
 import Dashboard from './components/Dashboard';
 import SignalManagement from './components/SignalManagement';
 import OrderMonitoring from './components/OrderMonitoring';
@@ -12,35 +12,42 @@ import AdminControls from './components/AdminControls';
 const App = () => {
   return (
     <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Dashboard</Link>
+      <nav>
+        <div className="navbar-container">
+          <div className="logo">
+            <div className="logo-icon">📈</div>
+            TradePro
+          </div>
+          <ul className="nav-menu">
+            <li className="nav-item">
+              <NavLink to="/" className="nav-link" activeClassName="active">Dashboard</NavLink>
             </li>
-            <li>
-              <Link to="/signals">Signal Management</Link>
+            <li className="nav-item">
+              <NavLink to="/signals" className="nav-link" activeClassName="active">Signals</NavLink>
             </li>
-            <li>
-              <Link to="/orders">Order Monitoring</Link>
+            <li className="nav-item">
+              <NavLink to="/orders" className="nav-link" activeClassName="active">Orders</NavLink>
             </li>
-            <li>
-              <Link to="/notifications">Notifications</Link>
+            <li className="nav-item">
+              <NavLink to="/notifications" className="nav-link" activeClassName="active">Notifications</NavLink>
             </li>
-            <li>
-              <Link to="/admin">Admin Controls</Link>
+            <li className="nav-item">
+              <NavLink to="/admin" className="nav-link" activeClassName="active">Admin</NavLink>
+            </li>
+            <li className="nav-item">
+              <a href="#" className="nav-link nav-cta">Trade Now</a>
             </li>
           </ul>
-        </nav>
+        </div>
+      </nav>
 
-        <Routes>
-          <Route path="/signals" element={<SignalManagement />} />
-          <Route path="/orders" element={<OrderMonitoring />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="/admin" element={<AdminControls />} />
-          <Route path="/" element={<Dashboard />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/signals" element={<SignalManagement />} />
+        <Route path="/orders" element={<OrderMonitoring />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/admin" element={<AdminControls />} />
+        <Route path="/" element={<Dashboard />} />
+      </Routes>
     </Router>
   );
 };

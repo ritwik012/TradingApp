@@ -1,86 +1,74 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,useEffect } from 'react';
 import axios from 'axios';
 
 const SignalManagement = () => {
-  const [signals, setSignals] = useState([]);
   const [newSignal, setNewSignal] = useState({
-    variant: '',
     symbol: '',
-    exchange: '',
-    transactionType: '',
-    productType: '',
-    orderType: '',
-    quantity: 0,
-    price: 0,
-    profitPer: 0,
-    strategyNo: 0,
-    broker: ''
+    price: 0
   });
 
-  useEffect(() => {
-    fetchSignals();
-  }, []);
+  const [responseData, setResponseData] = useState(null);
 
-  const fetchSignals = async () => {
-    try {
-      const response = await axios.get('/api/signals');
-      setSignals(response.data);
-    } catch (error) {
-      console.error('Error fetching signals:', error);
-    }
-  };
-
-  const createSignal = async () => {
-    try {
-      await axios.post('/api/signals', newSignal);
-      setNewSignal({
-        variant: '',
-        symbol: '',
-        exchange: '',
-        transactionType: '',
-        productType: '',
-        orderType: '',
-        quantity: 0,
-        price: 0,
-        profitPer: 0,
-        strategyNo: 0,
-        broker: ''
-      });
-      fetchSignals();
-    } catch (error) {
-      console.error('Error creating signal:', error);
-    }
-  };
 
   const handleInputChange = (e) => {
     setNewSignal({ ...newSignal, [e.target.name]: e.target.value });
   };
-
+  const sendSignal = async (e) => {
+    e.preventDefault();
+  
+    if (!newSignal.symbol || newSignal.price <= 0) {
+      alert("Please enter a valid symbol and price.");
+      return;
+    }
+  
+    try {
+      const response = await axios.post(
+        " https://129a-103-190-13-24.ngrok-free.app/api/sample/request",
+        newSignal,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      setResponseData(response.data);
+    } catch (error) {
+      console.error("Error sending signal:", error);
+      alert("Failed to send signal. Please try again.");
+    }
+  };
+  
   return (
     <div>
       <h2>Signal Management</h2>
-      <form onSubmit={createSignal}>
-        {/* Input fields for newSignal */}
-        <button type="submit">Create Signal</button>
+      <form onSubmit={sendSignal}>
+        <input 
+          type="text" 
+          name="symbol" 
+          value={newSignal.symbol} 
+          onChange={handleInputChange} 
+          placeholder="Enter Symbol" 
+          required 
+        />
+        <input 
+          type="number" 
+          name="price" 
+          value={newSignal.price} 
+          onChange={handleInputChange} 
+          placeholder="Enter Price" 
+          required 
+        />
+        <button type="submit">Send Signal</button>
       </form>
-      <table>
-        <thead>
-          <tr>
-            <th>Variant</th>
-            <th>Symbol</th>
-            {/* Add columns for other signal fields */}
-          </tr>
-        </thead>
-        <tbody>
-          {signals.map((signal) => (
-            <tr key={signal.id}>
-              <td>{signal.variant}</td>
-              <td>{signal.symbol}</td>
-              {/* Add cells for other signal fields */}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+      {responseData && (
+        <div>
+          <h3>Response:</h3>
+          <pre>{JSON.stringify(responseData, null, 2)}</pre>
+        </div>
+      )} 
+      
     </div>
   );
 };
